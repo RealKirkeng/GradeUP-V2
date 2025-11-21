@@ -39,12 +39,15 @@
             align-items: center;
             padding: 20px 50px;
             background: transparent;
+            position: relative;
+            z-index: 100;
         }
 
         .landing-header .logo {
             color: var(--primary);
             font-weight: 700;
             font-size: 1.5rem;
+            animation: slideInDown 0.8s ease-out;
         }
 
         .landing-header nav a {
@@ -52,14 +55,78 @@
             text-decoration: none;
             color: var(--text-main);
             font-weight: 600;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            position: relative;
         }
+        
+        .landing-header nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .landing-header nav a:hover::after {
+            width: 100%;
+        }
+        
         .landing-header nav a:hover {
             color: var(--primary);
         }
 
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .hero {
-            padding: 80px 20px;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(80, 227, 194, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(80, 227, 194, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         .hero-content h1 {
@@ -67,6 +134,11 @@
             margin-bottom: 20px;
             font-weight: 700;
             line-height: 1.2;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .hero-content p {
@@ -74,25 +146,70 @@
             max-width: 600px;
             margin: 0 auto 40px;
             color: #666;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .btn-enter-dash {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, #3a9dd6 100%);
             color: white;
             padding: 15px 30px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
             cursor: pointer;
             border: none;
             font-size: 1rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .btn-enter-dash::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-enter-dash:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
         .btn-enter-dash:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
         }
 
         button {
@@ -101,6 +218,7 @@
 
         .features-section {
             padding: 80px 50px;
+            position: relative;
         }
 
         .features-grid {
@@ -115,16 +233,63 @@
             padding: 40px 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            animation: scaleIn 0.6s ease-out backwards;
         }
+        
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
         .feature-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(74, 144, 226, 0.2);
+            border-color: var(--primary);
         }
 
         .feature-card i {
             font-size: 2.5rem;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 20px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         /* =========================================
@@ -188,24 +353,49 @@
             border-radius: 15px;
             padding: 40px 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             display: flex;
             flex-direction: column;
+            border: 2px solid transparent;
+            animation: scaleIn 0.6s ease-out backwards;
+            overflow: hidden;
+        }
+        
+        .pricing-card:nth-child(1) { animation-delay: 0.2s; }
+        .pricing-card:nth-child(2) { animation-delay: 0.3s; }
+        .pricing-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .pricing-card:hover::before {
+            left: 100%;
         }
 
         .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(74, 144, 226, 0.2);
+            border-color: var(--primary);
         }
 
         .pricing-card.popular {
             border: 2px solid var(--primary);
-            transform: scale(1.05);
+            transform: scale(1.08);
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(80, 227, 194, 0.05) 100%);
         }
 
         .pricing-card.popular:hover {
-            transform: scale(1.05) translateY(-10px);
+            transform: scale(1.08) translateY(-15px);
+            box-shadow: 0 30px 60px rgba(74, 144, 226, 0.3);
         }
 
         .pricing-popular-badge {
@@ -1755,10 +1945,13 @@
         </section>
 
         <!-- Become a Tutor CTA Section -->
-        <section style="padding: 80px 50px; background: linear-gradient(135deg, #E65100 0%, #FF7043 100%); color: white; text-align: center;">
-            <h2 style="font-size: 2.5rem; margin-bottom: 15px;">Become a GradeUp Tutor</h2>
-            <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 30px;">Share your knowledge, earn money, and make a real impact. Join thousands of student tutors earning €20/hr.</p>
-            <button id="landing-become-tutor-btn" class="btn-enter-dash" onclick="openTutorSignup()" style="background: white; color: #E65100; font-weight: 700; padding: 15px 40px; font-size: 1.1rem;">Start Your Tutor Journey</button>
+        <section style="padding: 100px 50px; background: linear-gradient(135deg, #E65100 0%, #FF7043 100%); color: white; text-align: center; position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -50%; right: -10%; width: 500px; height: 500px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: float 25s infinite ease-in-out;"></div>
+            <div style="position: absolute; bottom: -30%; left: -5%; width: 400px; height: 400px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: float 20s infinite ease-in-out reverse;"></div>
+            
+            <h2 style="font-size: 2.8rem; margin-bottom: 15px; position: relative; z-index: 1; animation: slideInDown 0.8s ease-out;">Become a GradeUp Tutor</h2>
+            <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px; position: relative; z-index: 1; animation: slideInUp 0.8s ease-out 0.2s both;">Share your knowledge, earn money, and make a real impact. Join thousands of student tutors earning €20/hr.</p>
+            <button id="landing-become-tutor-btn" class="btn-enter-dash" onclick="openTutorSignup()" style="background: white; color: #E65100; font-weight: 700; padding: 18px 50px; font-size: 1.2rem; position: relative; z-index: 1; animation: slideInUp 0.8s ease-out 0.4s both; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">Start Your Tutor Journey</button>
         </section>
 
         <section id="pricing" class="pricing-section">
@@ -3394,7 +3587,9 @@
         document.getElementById('notifications-btn').addEventListener('click', () => alert('Notifications panel'));
         document.getElementById('study-btn').addEventListener('click', () => nav('ai-workspace'));
         document.getElementById('find-tutor-btn').addEventListener('click', () => nav('tutors'));
-        document.getElementById('gemini-rewrite-btn').addEventListener('click', () => alert('Gemini Suggestion: Experienced Math Tutor specializing in simplified Calculus.'));
+        if(document.getElementById('gemini-rewrite-btn')) {
+            document.getElementById('gemini-rewrite-btn').addEventListener('click', () => alert('Gemini Suggestion: Experienced Math Tutor specializing in simplified Calculus.'));
+        }
         document.getElementById('select-file-btn').addEventListener('click', simulateUpload);
         document.getElementById('ai-summarize-btn').addEventListener('click', () => aiAction('Summarize'));
         document.getElementById('ai-quiz-btn').addEventListener('click', () => aiAction('Quiz'));
