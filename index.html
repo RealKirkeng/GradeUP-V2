@@ -763,6 +763,11 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
+        /* Hide specific nav items in tutor mode */
+        .nav-item.hide-in-tutor-mode {
+            display: none;
+        }
+
         /* --- View Switcher (New) --- */
         .view-switcher {
             margin-top: auto;
@@ -3271,12 +3276,22 @@
                     btn.classList.add('active-tutor');
                     label.innerText = "Switch to Student View";
                     sidebar.style.background = "#E65100"; // Orange for Tutor
+                    
+                    // Hide nav items in tutor mode
+                    document.getElementById('nav-tutors').classList.add('hide-in-tutor-mode');
+                    document.getElementById('nav-analytics').classList.add('hide-in-tutor-mode');
+                    document.getElementById('nav-profile').classList.add('hide-in-tutor-mode');
                 } else {
                     studentDash.classList.remove('view-hidden');
                     tutorDash.classList.add('view-hidden');
                     btn.classList.remove('active-tutor');
                     label.innerText = "Switch to Tutor View";
                     sidebar.style.background = "#4A90E2"; // Softer Blue for Student
+                    
+                    // Show nav items in student mode
+                    document.getElementById('nav-tutors').classList.remove('hide-in-tutor-mode');
+                    document.getElementById('nav-analytics').classList.remove('hide-in-tutor-mode');
+                    document.getElementById('nav-profile').classList.remove('hide-in-tutor-mode');
                 }
             }
 
