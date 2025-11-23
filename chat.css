@@ -1,0 +1,11 @@
+
+.chat-message.user {
+    background: var(--primary);
+    color: white;
+    align-self: flex-end;
+}
+
+.chat-body {
+    display: flex;
+    flex-direction: column;
+}
