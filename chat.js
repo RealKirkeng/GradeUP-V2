@@ -1,14 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed');
 
-    const chatToggle = document.getElementById('chat-toggle');
-    console.log('chatToggle:', chatToggle);
-
-    const chatWindow = document.getElementById('chat-window');
-    console.log('chatWindow:', chatWindow);
-
-    const closeChatBtn = document.getElementById('close-chat-btn');
-    console.log('closeChatBtn:', closeChatBtn);
 
     const chatBody = document.querySelector('.chat-body');
     const chatInput = document.querySelector('.chat-input input');
@@ -16,14 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (chatToggle) {
         chatToggle.addEventListener('click', () => {
-            console.log('chatToggle clicked');
             chatWindow.classList.toggle('active');
         });
     }
 
     if (closeChatBtn) {
         closeChatBtn.addEventListener('click', () => {
-            console.log('closeChatBtn clicked');
             chatWindow.classList.remove('active');
         });
     }
@@ -31,19 +20,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const addMessage = (message, sender) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('chat-message', sender);
-        messageElement.textContent = message;
+        if (sender === 'bot' && message === '...') {
+            messageElement.classList.add('typing');
+            messageElement.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        } else {
+            messageElement.textContent = message;
+        }
         chatBody.appendChild(messageElement);
         chatBody.scrollTop = chatBody.scrollHeight;
+        return messageElement;
     };
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         const message = chatInput.value.trim();
         if (message) {
             addMessage(message, 'user');
             chatInput.value = '';
-            setTimeout(() => {
-                addMessage('Thanks for your message! A support agent will be with you shortly.', 'bot');
-            }, 1000);
+            const typingIndicator = addMessage('...', 'bot');
+
+            try {
+                const { getGeminiResponse } = await import('./gemini.js');
+                const response = await getGeminiResponse(message);
+                typingIndicator.remove();
+                addMessage(response, 'bot');
+            } catch (error) {
+                console.error('Error getting Gemini response:', error);
+                typingIndicator.remove();
+                addMessage('Sorry, something went wrong. Please try again later.', 'bot');
+            }
         }
     };
 

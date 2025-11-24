@@ -4,14 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GradeUp | AI-Powered Learning Ecosystem</title>
+    <title>GradeUp | AI-Powered Student Tutors</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="chat.css">
+    <script src="chat.js" type="module"></script>
     
     <style>
+        .typing {
+            display: flex;
+            align-items: center;
+        }
+        .typing .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            margin: 0 2px;
+            animation: typing 1s infinite;
+        }
+        .typing .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
         :root {
             --primary: #4A90E2; /* Softer Blue */
             --secondary: #50E3C2; /* Mint Green */
@@ -39,10 +69,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background: transparent;
-            position: relative;
+            padding: 20px 40px;
+            background: rgba(221, 221, 221, 0.7);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            position: fixed;
+            top: 20px;
+            left: 75px;
+            right: 75px;
             z-index: 100;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        .landing-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(74, 144, 226, 0.05) 100%);
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .landing-header .logo {
@@ -50,6 +102,15 @@
             font-weight: 700;
             font-size: 1.5rem;
             animation: slideInDown 0.8s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .landing-header nav {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 10px;
         }
 
         .landing-header nav a {
@@ -59,6 +120,8 @@
             font-weight: 600;
             transition: all 0.3s;
             position: relative;
+            padding: 8px 16px;
+            border-radius: 12px;
         }
         
         .landing-header nav a::after {
@@ -78,6 +141,8 @@
         
         .landing-header nav a:hover {
             color: var(--primary);
+            background: rgba(74, 144, 226, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         @keyframes slideInDown {
@@ -92,7 +157,7 @@
         }
 
         .hero {
-            padding: 100px 20px;
+            padding: 300px 20px 150px;
             background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(80, 227, 194, 0.05) 100%);
             position: relative;
             overflow: hidden;
@@ -132,15 +197,24 @@
         }
 
         .hero-content h1 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             margin-bottom: 20px;
             font-weight: 700;
             line-height: 1.2;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, #FF6B6B 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(74, 144, 226, 0.2), 0 0 40px rgba(80, 227, 194, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(74, 144, 226, 0.4), 0 0 60px rgba(80, 227, 194, 0.2);
+            }
         }
 
         .hero-content p {
@@ -176,7 +250,7 @@
         .btn-enter-dash {
             background: linear-gradient(135deg, var(--primary) 0%, #3a9dd6 100%);
             color: white;
-            padding: 15px 30px;
+            padding: 16px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
@@ -202,6 +276,16 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
+            z-index: 0;
+        }
+        
+        .btn-enter-dash::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
         .btn-enter-dash:hover::before {
@@ -209,9 +293,17 @@
             height: 300px;
         }
         
+        .btn-enter-dash:hover::after {
+            opacity: 1;
+        }
+        
         .btn-enter-dash:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4);
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.4), 0 0 25px rgba(74, 144, 226, 0.3);
+        }
+        
+        .btn-enter-dash:active {
+            transform: translateY(-2px) scale(1.02);
         }
 
         button {
@@ -279,19 +371,156 @@
         }
 
         .feature-card i {
-            font-size: 2.5rem;
+            font-size: 3rem;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             animation: bounce 2s infinite;
+            width: 70px;
+            height: 70px;
         }
         
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Testimonial Styles */
+        .testimonials-section {
+            padding: 80px 50px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+        }
+        
+        .testimonials-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            text-align: center;
+            color: var(--text-main);
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+            animation: scaleIn 0.6s ease-out backwards;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .testimonial-card:nth-child(1) { animation-delay: 0.1s; }
+        .testimonial-card:nth-child(2) { animation-delay: 0.2s; }
+        .testimonial-card:nth-child(3) { animation-delay: 0.3s; }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .stars {
+            color: #FFD700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .testimonial-role {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        /* Stats Counter Section */
+        .stats-section {
+            padding: 60px 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .stat-item {
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out backwards;
+        }
+        
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+        
+n        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: countUp 2s ease-out;
+        }
+        
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+n        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
         }
 
         /* =========================================
@@ -304,14 +533,37 @@
 
         .impact-card {
             background: white;
-            padding: 30px;
+            padding: 40px 30px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: scaleIn 0.6s ease-out backwards;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .impact-card:nth-child(1) { animation-delay: 0.1s; }
+        .impact-card:nth-child(2) { animation-delay: 0.2s; }
+        .impact-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .impact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .impact-card:hover::before {
+            left: 100%;
         }
 
         .impact-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(74, 144, 226, 0.15);
         }
 
         .impact-number {
@@ -328,8 +580,13 @@
         }
         
         .landing-footer {
-            padding: 50px;
+            padding: 60px 50px;
             color: #888;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e8eef7 100%);
+            border-top: 1px solid rgba(74, 144, 226, 0.1);
+            text-align: center;
+            font-size: 0.9rem;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
         }
 
         /* =========================================
@@ -352,7 +609,7 @@
 
         .pricing-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             padding: 40px 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -375,8 +632,9 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.1), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(74, 144, 226, 0.15), transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
         }
 
         .pricing-card:hover::before {
@@ -384,20 +642,21 @@
         }
 
         .pricing-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(74, 144, 226, 0.2);
+            transform: translateY(-20px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(74, 144, 226, 0.25), inset 0 0 20px rgba(74, 144, 226, 0.05);
             border-color: var(--primary);
         }
 
         .pricing-card.popular {
             border: 2px solid var(--primary);
             transform: scale(1.08);
-            background: linear-gradient(135deg, rgba(74, 144, 226, 0.05) 0%, rgba(80, 227, 194, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08) 0%, rgba(80, 227, 194, 0.08) 100%);
+            box-shadow: 0 15px 45px rgba(74, 144, 226, 0.15);
         }
 
         .pricing-card.popular:hover {
-            transform: scale(1.08) translateY(-15px);
-            box-shadow: 0 30px 60px rgba(74, 144, 226, 0.3);
+            transform: scale(1.08) translateY(-20px);
+            box-shadow: 0 40px 80px rgba(74, 144, 226, 0.35), inset 0 0 25px rgba(74, 144, 226, 0.08);
         }
 
         .pricing-popular-badge {
@@ -502,9 +761,24 @@
         .faq-item {
             background: white;
             padding: 25px;
-            border-radius: 12px;
+            border-radius: 15px;
             border-left: 4px solid var(--primary);
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+        
+        .faq-item:nth-child(1) { animation-delay: 0.1s; }
+        .faq-item:nth-child(2) { animation-delay: 0.2s; }
+        .faq-item:nth-child(3) { animation-delay: 0.3s; }
+        .faq-item:nth-child(4) { animation-delay: 0.4s; }
+        .faq-item:nth-child(5) { animation-delay: 0.5s; }
+        .faq-item:nth-child(6) { animation-delay: 0.6s; }
+
+        .faq-item:hover {
+            transform: translateY(-8px) translateX(5px);
+            box-shadow: 0 15px 35px rgba(74, 144, 226, 0.15);
+            border-left-color: var(--secondary);
         }
 
         .faq-item h4 {
@@ -514,17 +788,174 @@
             align-items: center;
             gap: 10px;
             font-size: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .faq-item:hover h4 {
+            color: var(--primary);
         }
 
         .faq-item h4 i {
             color: var(--primary);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            animation: bounce 2s infinite;
         }
 
         .faq-item p {
             color: #666;
             font-size: 0.9rem;
             line-height: 1.6;
+        }
+
+        /* Team Section Styles */
+        .team-section {
+            padding: 100px 50px;
+            background: linear-gradient(135deg, #f8f9fa 0%, rgba(74, 144, 226, 0.05) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .team-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(80, 227, 194, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+
+        .team-section h2 {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: scaleIn 0.6s ease-out backwards;
+            position: relative;
+        }
+
+        .team-card:nth-child(1) { animation-delay: 0.1s; }
+        .team-card:nth-child(2) { animation-delay: 0.2s; }
+        .team-card:nth-child(3) { animation-delay: 0.3s; }
+        .team-card:nth-child(4) { animation-delay: 0.4s; }
+        .team-card:nth-child(5) { animation-delay: 0.5s; }
+        .team-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .team-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(74, 144, 226, 0.25);
+        }
+
+        .team-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .team-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .team-card:hover .team-image {
+            transform: scale(1.1) rotate(2deg);
+        }
+
+        .team-image-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .team-card:hover .team-image-wrapper::after {
+            left: 100%;
+        }
+
+        .team-info {
+            padding: 30px;
+        }
+
+        .team-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .team-role {
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .team-skills {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .team-interests {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.6;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .team-section .divider {
+            text-align: center;
+            margin: 80px 0;
+            font-size: 2rem;
+            color: rgba(74, 144, 226, 0.3);
         }
 
         /* CTA Section */
@@ -730,7 +1161,7 @@
         .logo {
             font-size: 1.8rem;
             font-weight: 800;
-            margin-bottom: 40px;
+            margin: 15px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -866,6 +1297,324 @@
         .page-section.active { display: block; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
         .view-hidden { display: none !important; }
+
+        /* --- LIVE CLASS / WEBCAM AREA STYLES --- */
+        .live-class-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #0a0e27;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .live-class-container.active {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 15px;
+        }
+
+        .live-class-main {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .video-feed-area {
+            flex: 1;
+            background: linear-gradient(135deg, #1a1f3a 0%, #16213e 100%);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .video-tutor {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(80, 227, 194, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-tutor::before {
+            content: '📹';
+            font-size: 80px;
+            opacity: 0.3;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .video-tutor-placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            z-index: 2;
+        }
+
+        .video-tutor-placeholder h4 {
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .student-video-pill {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            width: 150px;
+            height: 110px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.4) 0%, rgba(80, 227, 194, 0.4) 100%);
+            border-radius: 10px;
+            border: 2px solid rgba(74, 144, 226, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .student-video-pill:hover {
+            border-color: rgba(74, 144, 226, 1);
+            transform: scale(1.05);
+        }
+
+        .class-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            background: rgba(20, 30, 60, 0.8);
+            padding: 15px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(74, 144, 226, 0.3);
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: rgba(74, 144, 226, 0.6);
+            transform: scale(1.1);
+        }
+
+        .control-btn.active {
+            background: rgba(76, 175, 80, 0.6);
+        }
+
+        .control-btn.inactive {
+            background: rgba(244, 67, 54, 0.6);
+        }
+
+        .end-class-btn {
+            background: rgba(244, 67, 54, 0.8) !important;
+            padding: 12px 30px !important;
+            border-radius: 25px !important;
+            font-weight: 600 !important;
+            width: auto !important;
+            height: auto !important;
+        }
+
+        .end-class-btn:hover {
+            background: rgba(244, 67, 54, 1) !important;
+        }
+
+        /* Sidebar - Chat & Notes */
+        .live-class-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar-panel {
+            background: rgba(20, 30, 60, 0.9);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-panel-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+            color: white;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(74, 144, 226, 0.15);
+        }
+
+        .sidebar-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .chat-message.tutor {
+            background: rgba(74, 144, 226, 0.2);
+            border-left: 3px solid rgba(74, 144, 226, 0.6);
+            color: #fff;
+        }
+
+        .chat-message.student {
+            background: rgba(80, 227, 194, 0.2);
+            border-left: 3px solid rgba(80, 227, 194, 0.6);
+            color: #fff;
+            text-align: right;
+        }
+
+        .chat-message-author {
+            font-weight: 600;
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            border-top: 1px solid rgba(74, 144, 226, 0.2);
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(74, 144, 226, 0.15);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-area input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .chat-input-area button {
+            background: rgba(74, 144, 226, 0.6);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            width: 35px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-input-area button:hover {
+            background: rgba(74, 144, 226, 0.9);
+        }
+
+        .notes-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            height: 100px;
+            background: rgba(74, 144, 226, 0.15);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 6px;
+            padding: 10px;
+            color: white;
+            font-size: 0.85rem;
+            resize: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .notes-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Student-specific tools */
+        .student-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .student-tool-btn {
+            background: rgba(80, 227, 194, 0.2);
+            border: 1px solid rgba(80, 227, 194, 0.4);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .student-tool-btn:hover {
+            background: rgba(80, 227, 194, 0.4);
+            border-color: rgba(80, 227, 194, 0.6);
+        }
+
+        /* Tutor-specific tools */
+        .tutor-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tutor-tool-btn {
+            background: rgba(230, 81, 0, 0.2);
+            border: 1px solid rgba(230, 81, 0, 0.4);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tutor-tool-btn:hover {
+            background: rgba(230, 81, 0, 0.4);
+            border-color: rgba(230, 81, 0, 0.6);
+        }
 
         /* --- DASHBOARD STYLES --- */
         .dashboard-layout {
@@ -1881,13 +2630,70 @@
             font-size: 1rem;
         }
 
+        /* Notification Panel Styles */
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .notification-item small {
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        #notifications-panel.active {
+            animation: fadeIn 0.3s forwards;
+        }
+
+        #notifications-panel.inactive {
+            animation: fadeOut 0.3s forwards;
+        }
     </style>
 </head>
 <body>
     <div id="landing-page">
         <header class="landing-header">
             <div class="logo">
-                <i class="fas fa-graduation-cap"></i> GradeUp
+                <i class="fas fa-user-graduate"></i> GradeUp
             </div>
             <nav>
                 <a href="#features">Features</a>
@@ -1899,8 +2705,8 @@
         <section class="hero">
             <canvas id="hero-canvas" style="position: absolute; top: 0; left: 0; z-index: 1;"></canvas>
             <div class="hero-content" style="position: relative; z-index: 2;">
-                <h1>Learning from Peers You Can Relate To</h1>
-                <p>GradeUp connects you with verified university student tutors who've recently mastered the subjects you're studying. Get personalized, affordable tutoring with the support of AI-powered learning tools.</p>
+                <h1>The Future of Personalized Tutoring</h1>
+                <p>Connect with top university students, empowered by AI, for a learning experience tailored to you.</p>
                 <a href="#" id="enter-dash-btn" class="btn-enter-dash">Start Your Free Lesson</a>
             </div>
         </section>
@@ -1921,6 +2727,53 @@
                     <i class="fas fa-globe"></i>
                     <h3>Socially Responsible</h3>
                     <p>Support quality education (SDG 4) and decent work for young people (SDG 8). Your investment makes a real difference.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <h2>What Students & Tutors Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"My tutor explained concepts in a way that finally made sense. The personalized approach has boosted my grades significantly!"</p>
+                    <p class="testimonial-author">Emma Thompson</p>
+                    <p class="testimonial-role">Student, Mathematics</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Tutoring through GradeUp has been life-changing. I earn €20/hour with flexible scheduling, and students appreciate the verified approach."</p>
+                    <p class="testimonial-author">Lucas Mendez</p>
+                    <p class="testimonial-role">Tutor, Computer Science</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"The matching process works perfectly. I found a tutor who understands my learning style. It's like having a personal academic coach!"</p>
+                    <p class="testimonial-author">Sofia Patel</p>
+                    <p class="testimonial-role">Student, Economics</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5,000+</div>
+                    <div class="stat-label">Verified Tutors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">250,000+</div>
+                    <div class="stat-label">Hours Tutored</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4.9/5</div>
+                    <div class="stat-label">Average Rating</div>
                 </div>
             </div>
         </section>
@@ -2072,6 +2925,110 @@
                 <h3><i class="fas fa-graduation-cap"></i> Join the GradeUp Community</h3>
                 <p>Connect with verified tutors, improve your grades, and support sustainable education</p>
                 <a href="#" id="pricing-cta-btn" class="btn-enter-dash" style="margin-top: 20px;">Start Your Free Lesson</a>
+            </div>
+        </section>
+
+        <!-- Meet the Team Section -->
+        <section class="team-section">
+            <h2>Meet the Team Behind GradeUp</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Sophia.jpg" alt="Sophia" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Sophia Manger</div>
+                        <div class="team-role">International Business & Engineering (Bachelor)</div>
+                        <div class="team-skills"><strong>Skills:</strong> MS Office, Teamwork, Creativity, Analytical thinking</div>
+                        <div class="team-interests"><strong>Interests:</strong> Tennis, Skiing, Spending time with friends</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Chihiro.jpg" alt="Chihiro" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Chihiro Uresaki</div>
+                        <div class="team-role">Social Sciences (Bachelor)</div>
+                        <div class="team-skills"><strong>Skills:</strong> Teamwork, Critical thinking, MS Office</div>
+                        <div class="team-interests"><strong>Interests:</strong> Saxophone, Hula dance, Traveling, Cooking</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Sandra.jpg" alt="Sandra" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Sandra Blaszczyk</div>
+                        <div class="team-role">Marketing and Leadership (Bachelor)</div>
+                        <div class="team-skills"><strong>Skills:</strong> MS Office, Teamwork, Creative thinking, Adobe Photoshop</div>
+                        <div class="team-interests"><strong>Interests:</strong> Drawing, Reading</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Sofia.jpg" alt="Sofia" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Sofia Martini</div>
+                        <div class="team-role">Corporate Communication (Master)</div>
+                        <div class="team-skills"><strong>Skills:</strong> MS Office, Teamwork and Adaptability, Wordpress, Shopify</div>
+                        <div class="team-interests"><strong>Interests:</strong> Reading, Traveling, Languages</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Camilla.jpg" alt="Camilla" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Camilla Andreana</div>
+                        <div class="team-role">Web Marketing and Digital Business (Master)</div>
+                        <div class="team-skills"><strong>Skills:</strong> Teamwork, Time management, Adaptability</div>
+                        <div class="team-interests"><strong>Interests:</strong> Traveling, Outdoor activities</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Martina.jpg" alt="Martina" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Martina Fedele</div>
+                        <div class="team-role">Web Marketing and Digital Business (Master)</div>
+                        <div class="team-skills"><strong>Skills:</strong> Problem solving, Adaptability, Multilingual communication (Italian, Spanish, English, French)</div>
+                        <div class="team-interests"><strong>Interests:</strong> Languages, Traveling, Intercultural exchange</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-grid" style="margin-top: 60px;">
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Zulaj.jpg" alt="Zulaj" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Zulaj Khodea</div>
+                        <div class="team-role">Business Administration (Integrated Master)</div>
+                        <div class="team-skills"><strong>Skills:</strong> Marketing, Strategy, Analysis</div>
+                        <div class="team-interests"><strong>Interests:</strong> Finance, Politics, Art</div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-image-wrapper">
+                        <img src="profile_images/Andreas.jpg" alt="Andreas" class="team-image">
+                    </div>
+                    <div class="team-info">
+                        <div class="team-name">Andreas Skimmeland Kirkeng</div>
+                        <div class="team-role">Business Administration (Integrated Master)</div>
+                        <div class="team-skills"><strong>Skills:</strong> Problem solving, MS365, Presenting</div>
+                        <div class="team-interests"><strong>Interests:</strong> Economics, Strategy, History, Politics</div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -2241,6 +3198,128 @@
 
     <div class="main-content" style="display: none;">
         
+        <!-- LIVE CLASS / WEBCAM AREA -->
+        <div id="live-class-container" class="live-class-container">
+            <div class="live-class-main">
+                <!-- Main Video Feed -->
+                <div class="video-feed-area">
+                    <div class="video-tutor">
+                        <div class="video-tutor-placeholder">
+                            <h4>📹 Waiting for tutor to start...</h4>
+                            <p style="font-size: 0.85rem;">Class starts in a moment</p>
+                        </div>
+                        <div class="student-video-pill" onclick="toggleStudentVideo()">📷</div>
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <div class="class-controls">
+                    <button class="control-btn active" id="mic-btn" onclick="toggleMic()" title="Microphone">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button class="control-btn active" id="camera-btn" onclick="toggleCamera()" title="Camera">
+                        <i class="fas fa-video"></i>
+                    </button>
+                    <button class="control-btn" id="screen-share-btn" onclick="toggleScreenShare()" title="Share Screen">
+                        <i class="fas fa-desktop"></i>
+                    </button>
+                    <button class="control-btn" id="hand-raise-btn" onclick="raiseHand()" title="Raise Hand">
+                        <i class="fas fa-hand-paper"></i>
+                    </button>
+                    <button class="control-btn" id="chat-toggle-btn" onclick="toggleChatPanel()" title="Chat">
+                        <i class="fas fa-comments"></i>
+                    </button>
+                    <button class="end-class-btn" onclick="endClass()">
+                        <i class="fas fa-phone-slash"></i> End Class
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar - Chat & Tools -->
+            <div class="live-class-sidebar">
+                <!-- Chat Panel -->
+                <div class="sidebar-panel" id="chat-panel">
+                    <div class="sidebar-panel-header">
+                        <span><i class="fas fa-comments"></i> Chat</span>
+                        <button onclick="minimizePanel('chat-panel')" style="background: none; border: none; color: white; cursor: pointer;">−</button>
+                    </div>
+                    <div class="sidebar-panel-content" id="chat-messages">
+                        <div class="chat-message tutor">
+                            <div class="chat-message-author">Dr. Sarah Johnson</div>
+                            <div>Welcome to today's Physics session! Let's dive into Quantum Mechanics.</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" placeholder="Type your message..." id="chat-input" onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+
+                <!-- Notes Panel -->
+                <div class="sidebar-panel" id="notes-panel">
+                    <div class="sidebar-panel-header">
+                        <span><i class="fas fa-sticky-note"></i> My Notes</span>
+                        <button onclick="minimizePanel('notes-panel')" style="background: none; border: none; color: white; cursor: pointer;">−</button>
+                    </div>
+                    <div class="sidebar-panel-content" style="padding: 0;">
+                        <div class="notes-section" style="height: 100%; padding: 12px; display: flex; flex-direction: column;">
+                            <textarea class="notes-textarea" id="class-notes" placeholder="Take notes during class...&#10;- Key concepts&#10;- Questions to ask&#10;- Homework"></textarea>
+                            <button onclick="saveNotes()" style="background: rgba(76, 175, 80, 0.4); color: white; border: 1px solid rgba(76, 175, 80, 0.6); padding: 8px; border-radius: 6px; margin-top: 8px; cursor: pointer; font-size: 0.85rem;">💾 Save Notes</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Learning Tools (Student) -->
+                <div class="sidebar-panel student-tools-panel" id="student-tools-panel" style="display: none;">
+                    <div class="sidebar-panel-header">
+                        <span><i class="fas fa-lightbulb"></i> Study Tools</span>
+                    </div>
+                    <div class="sidebar-panel-content">
+                        <div class="student-tools">
+                            <button class="student-tool-btn" onclick="askQuestion()">
+                                <i class="fas fa-question-circle"></i> Ask a Question
+                            </button>
+                            <button class="student-tool-btn" onclick="requestBreak()">
+                                <i class="fas fa-clock"></i> Request Break
+                            </button>
+                            <button class="student-tool-btn" onclick="requestSlowDown()">
+                                <i class="fas fa-turtle"></i> Slow Down
+                            </button>
+                            <button class="student-tool-btn" onclick="downloadResources()">
+                                <i class="fas fa-download"></i> Download Resources
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Teaching Tools (Tutor) -->
+                <div class="sidebar-panel tutor-tools-panel" id="tutor-tools-panel" style="display: none;">
+                    <div class="sidebar-panel-header">
+                        <span><i class="fas fa-chalkboard"></i> Teaching Tools</span>
+                    </div>
+                    <div class="sidebar-panel-content">
+                        <div class="tutor-tools">
+                            <button class="tutor-tool-btn" onclick="openWhiteboard()">
+                                <i class="fas fa-paint-brush"></i> Virtual Whiteboard
+                            </button>
+                            <button class="tutor-tool-btn" onclick="shareScreenContent()">
+                                <i class="fas fa-share-square"></i> Share Content
+                            </button>
+                            <button class="tutor-tool-btn" onclick="startQuiz()">
+                                <i class="fas fa-tasks"></i> Quick Quiz
+                            </button>
+                            <button class="tutor-tool-btn" onclick="manageStudents()">
+                                <i class="fas fa-users"></i> Manage Students
+                            </button>
+                            <button class="tutor-tool-btn" onclick="recordSession()">
+                                <i class="fas fa-record-vinyl"></i> Record Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="top-header">
             <div>
                 <button id="menu-toggle-btn" class="btn btn-primary" style="margin-right: 15px; display: none;"><i class="fas fa-bars"></i></button>
@@ -2251,11 +3330,53 @@
                 <div class="streak-badge">
                     <i class="fas fa-fire"></i> 12 Day Streak
                 </div>
-                <button id="notifications-btn" class="btn btn-primary">
+                <button id="notifications-btn" class="btn btn-primary" style="position: relative;">
                     <i class="fas fa-bell"></i>
+                    <span class="notification-badge" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center;">2</span>
                 </button>
             </div>
         </div>
+
+        <!-- Notifications Panel -->
+        <div id="notifications-panel" style="display: none; position: absolute; right: 30px; top: 80px; width: 350px; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); z-index: 1002;">
+            <div style="padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                <h4 style="margin: 0;">Notifications</h4>
+                <button id="close-notifications-btn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="notifications-body" style="padding: 15px; max-height: 300px; overflow-y: auto;">
+                <!-- Student Notifications -->
+                <div class="notification-item student-notification">
+                    <div class="notification-icon" style="background: #4A90E2;"><i class="fas fa-book"></i></div>
+                    <div>
+                        <p>Your <strong>Calculus II</strong> assignment is due tomorrow.</p>
+                        <small>1 hour ago</small>
+                    </div>
+                </div>
+                <div class="notification-item student-notification">
+                    <div class="notification-icon" style="background: #F5A623;"><i class="fas fa-users"></i></div>
+                    <div>
+                        <p>Your <strong>Physics Study Group</strong> is starting in 15 minutes.</p>
+                        <small>2 hours ago</small>
+                    </div>
+                </div>
+                <!-- Tutor Notifications -->
+                <div class="notification-item tutor-notification" style="display: none;">
+                    <div class="notification-icon" style="background: #E65100;"><i class="fas fa-user-check"></i></div>
+                    <div>
+                        <p><strong>Sarah J.</strong> has booked a session for <strong>Calculus I</strong>.</p>
+                        <small>30 minutes ago</small>
+                    </div>
+                </div>
+                <div class="notification-item tutor-notification" style="display: none;">
+                    <div class="notification-icon" style="background: #50E3C2;"><i class="fas fa-file-alt"></i></div>
+                    <div>
+                        <p>You have a new document to review for <strong>History 101</strong>.</p>
+                        <small>45 minutes ago</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div id="dashboard" class="page-section active">
 
@@ -2288,6 +3409,21 @@
                                 <div class="stat-value" style="color: var(--accent);">#42</div>
                                 <small>Top 5% of Students</small>
                             </div>
+                        </div>
+
+                        <!-- JOIN SESSION AREA -->
+                        <div style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(80, 227, 194, 0.1) 100%); border: 2px solid rgba(76, 175, 80, 0.3); border-radius: 15px; padding: 25px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h3 style="margin: 0 0 8px 0; color: var(--text-main);">
+                                    <i class="fas fa-video" style="color: #4CAF50; margin-right: 10px;"></i>Live Tutoring Session
+                                </h3>
+                                <p style="margin: 0; color: #666; font-size: 0.9rem;">
+                                    Join a live session with your tutor • <strong>Sarah Johnson</strong> is waiting
+                                </p>
+                            </div>
+                            <button onclick="startLiveClass('student')" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);">
+                                <i class="fas fa-video"></i> Join Session Now
+                            </button>
                         </div>
 
                         <h3 style="margin-bottom: 15px;">Active Courses</h3>
@@ -2333,7 +3469,7 @@
 
                     <div class="side-col">
                         <div class="ai-task-list">
-                            <h4 style="margin-bottom: 15px; color: #1565C0;"><i class="fas fa-robot"></i> Gemini Daily Plan</h4>
+                            <h4 style="margin-bottom: 15px; color: #1565C0;"><i class="fas fa-robot"></i> GradeUp AI Daily Plan</h4>
                             <div class="task-item"><input type="checkbox"> <span>Review Calculus Flashcards</span></div>
                             <div class="task-item"><input type="checkbox" checked> <span style="text-decoration: line-through; color:#888;">Upload Essay</span></div>
                             <div class="task-item"><input type="checkbox"> <span>Watch Physics lecture on Kinematics</span></div>
@@ -2342,7 +3478,8 @@
                         <div class="card" style="margin-top: 25px; background: var(--secondary); color: white; text-align: center;">
                             <h4>Need Help?</h4>
                             <p style="font-size: 0.8rem; margin: 10px 0; opacity: 0.9;">24 Tutors online.</p>
-                            <button id="find-tutor-btn" class="btn" style="background: white; color: var(--secondary); width: 100%;">Find Tutor</button>
+                            <button id="find-tutor-btn" class="btn" style="background: white; color: var(--secondary); width: 100%; margin-bottom: 10px;">Find Tutor</button>
+                            <button id="start-class-btn" class="btn" style="background: rgba(76, 175, 80, 0.8); color: white; width: 100%; border: none;" onclick="startLiveClass('student')"><i class="fas fa-video"></i> Start Session</button>
                         </div>
                     </div>
                 </div>
@@ -2420,7 +3557,7 @@
                                                 <span style="display: inline-block; background: #F3E5F5; color: #7B1FA2; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; margin-left: 5px;">1st Time Booking</span>
                                             </div>
                                         </div>
-                                        <button class="btn btn-primary" style="background: #E65100; margin-bottom: auto;">Join Now</button>
+                                        <button class="btn btn-primary" style="background: #E65100; margin-bottom: auto;" onclick="startLiveClass('tutor')"><i class="fas fa-video"></i> Join Now</button>
                                     </div>
                                 </div>
                             </div>
@@ -3241,6 +4378,7 @@
                 const btn = document.querySelector('.toggle-btn');
                 const label = document.getElementById('view-label');
                 const sidebar = document.querySelector('.sidebar');
+                const body = document.body;
 
                 if (isTutorMode) {
                     studentDash.classList.add('view-hidden');
@@ -3248,6 +4386,7 @@
                     btn.classList.add('active-tutor');
                     label.innerText = "Switch to Student View";
                     sidebar.style.background = "#E65100"; // Orange for Tutor
+                    body.classList.add('tutor-mode');
                     
                     // Hide nav items in tutor mode
                     document.getElementById('nav-tutors').classList.add('hide-in-tutor-mode');
@@ -3259,6 +4398,7 @@
                     btn.classList.remove('active-tutor');
                     label.innerText = "Switch to Tutor View";
                     sidebar.style.background = "#4A90E2"; // Softer Blue for Student
+                    body.classList.remove('tutor-mode');
                     
                     // Show nav items in student mode
                     document.getElementById('nav-tutors').classList.remove('hide-in-tutor-mode');
@@ -3267,7 +4407,163 @@
                 }
             }
 
-            // 3. AI Logic - Tool Switching and Management
+            // 3. LIVE CLASS / WEBCAM AREA FUNCTIONS
+            function startLiveClass(userType) {
+                const liveClassContainer = document.getElementById('live-class-container');
+                liveClassContainer.classList.add('active');
+                
+                // Show appropriate tools based on user type
+                if (userType === 'student') {
+                    document.getElementById('student-tools-panel').style.display = 'flex';
+                    document.getElementById('tutor-tools-panel').style.display = 'none';
+                } else if (userType === 'tutor') {
+                    document.getElementById('tutor-tools-panel').style.display = 'flex';
+                    document.getElementById('student-tools-panel').style.display = 'none';
+                }
+            }
+
+            function endClass() {
+                if (confirm('Are you sure you want to end the class session?')) {
+                    const liveClassContainer = document.getElementById('live-class-container');
+                    liveClassContainer.classList.remove('active');
+                    alert('Class session ended. Session notes have been saved.');
+                }
+            }
+
+            function toggleMic() {
+                const btn = document.getElementById('mic-btn');
+                btn.classList.toggle('active');
+                btn.classList.toggle('inactive');
+            }
+
+            function toggleCamera() {
+                const btn = document.getElementById('camera-btn');
+                btn.classList.toggle('active');
+                btn.classList.toggle('inactive');
+            }
+
+            function toggleScreenShare() {
+                const btn = document.getElementById('screen-share-btn');
+                btn.classList.toggle('active');
+                alert('Screen sharing started. Your screen is now visible to all participants.');
+            }
+
+            function toggleStudentVideo() {
+                alert('Your camera is now visible to the tutor.');
+            }
+
+            function raiseHand() {
+                const btn = document.getElementById('hand-raise-btn');
+                btn.classList.add('active');
+                sendChatMessage('[Raised hand - asking question]', 'system');
+                setTimeout(() => btn.classList.remove('active'), 5000);
+            }
+
+            function toggleChatPanel() {
+                const chatPanel = document.getElementById('chat-panel');
+                chatPanel.style.display = chatPanel.style.display === 'none' ? 'flex' : 'none';
+            }
+
+            function minimizePanel(panelId) {
+                const panel = document.getElementById(panelId);
+                const content = panel.querySelector('.sidebar-panel-content');
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+            }
+
+            function sendChatMessage(message = null, sender = 'student') {
+                const input = document.getElementById('chat-input');
+                const msg = message || input.value.trim();
+                
+                if (!msg) return;
+                
+                const chatMessages = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${sender}`;
+                messageDiv.innerHTML = `<div class="chat-message-author">${sender === 'student' ? 'You' : 'Dr. Sarah Johnson'}</div><div>${msg}</div>`;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                input.value = '';
+            }
+
+            function handleChatKeyPress(event) {
+                if (event.key === 'Enter') {
+                    sendChatMessage();
+                }
+            }
+
+            function saveNotes() {
+                const notes = document.getElementById('class-notes').value;
+                alert('Notes saved successfully!\n\n' + (notes || 'No notes taken'));
+            }
+
+            // Student-specific tools
+            function askQuestion() {
+                const question = prompt('What would you like to ask your tutor?');
+                if (question) {
+                    sendChatMessage(`📌 Question: ${question}`, 'student');
+                }
+            }
+
+            function requestBreak() {
+                sendChatMessage('🕐 Requesting a 5-minute break', 'system');
+                alert('Break request sent to tutor');
+            }
+
+            function requestSlowDown() {
+                sendChatMessage('🐢 Tutor, please slow down - I need more time to understand', 'system');
+                alert('Slow down request sent');
+            }
+
+            function downloadResources() {
+                alert('📥 Resources:\n- Calculus_Derivatives.pdf\n- Practice_Problems.docx\n- Formula_Sheet.xlsx\n\nAll resources have been saved to your Downloads folder.');
+            }
+
+            // Tutor-specific tools
+            function openWhiteboard() {
+                alert('🎨 Virtual Whiteboard opened. You can now draw and share diagrams with your student.');
+            }
+
+            function shareScreenContent() {
+                alert('📺 Select what you want to share:\n1. Your screen\n2. A specific application\n3. Pre-recorded content');
+            }
+
+            function startQuiz() {
+                alert('📋 Quick Quiz Started:\n1. What is calculus?\n2. Define a derivative\n3. Explain the chain rule\n\nStudent will receive instant feedback.');
+            }
+
+            function manageStudents() {
+                alert('👥 Student Manager:\n- John: Excellent progress, on pace\n- Sarah: Needs help with derivatives\n- Mike: Excelling, ready for advanced topics\n\nYou can adjust pace and difficulty per student.');
+            }
+
+            function recordSession() {
+                alert('🎥 Session Recording: ENABLED\n\nThis session is being recorded for future reference. Students can review the recording after the class.');
+            }
+
+            // Make functions globally accessible
+            window.startLiveClass = startLiveClass;
+            window.endClass = endClass;
+            window.toggleMic = toggleMic;
+            window.toggleCamera = toggleCamera;
+            window.toggleScreenShare = toggleScreenShare;
+            window.toggleStudentVideo = toggleStudentVideo;
+            window.raiseHand = raiseHand;
+            window.toggleChatPanel = toggleChatPanel;
+            window.minimizePanel = minimizePanel;
+            window.sendChatMessage = sendChatMessage;
+            window.handleChatKeyPress = handleChatKeyPress;
+            window.saveNotes = saveNotes;
+            window.askQuestion = askQuestion;
+            window.requestBreak = requestBreak;
+            window.requestSlowDown = requestSlowDown;
+            window.downloadResources = downloadResources;
+            window.openWhiteboard = openWhiteboard;
+            window.shareScreenContent = shareScreenContent;
+            window.startQuiz = startQuiz;
+            window.manageStudents = manageStudents;
+            window.recordSession = recordSession;
+
+            // 4. AI Logic - Tool Switching and Management
             let currentAITool = 'pdf-summary';
 
             // AI Tool Selector
@@ -3571,7 +4867,56 @@
         document.getElementById('nav-settings').addEventListener('click', () => nav('settings'));
         document.getElementById('nav-profile').addEventListener('click', () => nav('profile'));
         document.getElementById('toggle-view-btn').addEventListener('click', toggleUserView);
-        document.getElementById('notifications-btn').addEventListener('click', () => alert('Notifications panel'));
+        
+        const notificationsPanel = document.getElementById('notifications-panel');
+        const notificationsBtn = document.getElementById('notifications-btn');
+        const closeNotificationsBtn = document.getElementById('close-notifications-btn');
+
+        notificationsBtn.addEventListener('click', () => {
+            const isTutor = document.body.classList.contains('tutor-mode');
+            const studentNotifications = document.querySelectorAll('.student-notification');
+            const tutorNotifications = document.querySelectorAll('.tutor-notification');
+
+            if (isTutor) {
+                studentNotifications.forEach(n => n.style.display = 'none');
+                tutorNotifications.forEach(n => n.style.display = 'flex');
+            } else {
+                studentNotifications.forEach(n => n.style.display = 'flex');
+                tutorNotifications.forEach(n => n.style.display = 'none');
+            }
+
+            if (notificationsPanel.style.display === 'none') {
+                notificationsPanel.style.display = 'block';
+                notificationsPanel.classList.remove('inactive');
+                notificationsPanel.classList.add('active');
+            } else {
+                notificationsPanel.classList.remove('active');
+                notificationsPanel.classList.add('inactive');
+                setTimeout(() => {
+                    notificationsPanel.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        closeNotificationsBtn.addEventListener('click', () => {
+            notificationsPanel.classList.remove('active');
+            notificationsPanel.classList.add('inactive');
+            setTimeout(() => {
+                notificationsPanel.style.display = 'none';
+            }, 300);
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInside = notificationsPanel.contains(event.target) || notificationsBtn.contains(event.target);
+            if (!isClickInside && notificationsPanel.style.display === 'block') {
+                notificationsPanel.classList.remove('active');
+                notificationsPanel.classList.add('inactive');
+                setTimeout(() => {
+                    notificationsPanel.style.display = 'none';
+                }, 300);
+            }
+        });
+
         document.getElementById('study-btn').addEventListener('click', () => nav('ai-workspace'));
         document.getElementById('find-tutor-btn').addEventListener('click', () => nav('tutors'));
         if(document.getElementById('gemini-rewrite-btn')) {
@@ -4092,7 +5437,7 @@
 
             window.viewGroup = function(groupId){ nav('community'); alert('Opening group view: '+ (getGroups().find(g=>g.id===groupId)||{}).name ); };
 
-            window.openPostDetail = function(postId){ nav('community'); alert('Open post: '+postId + '\n(Detail view not implemented in this demo)'); };
+            window.openPostDetail = function(postId){ nav('community'); alert('Open post: '+postId + '(Detail view not implemented in this demo)'); };
 
     
 
@@ -4388,13 +5733,13 @@
 
             </div>
 
-            <div class="chat-input">
+                        <div class="chat-input">
 
-                <input type="text" placeholder="Type a message...">
+                            <input type="text" placeholder="Ask Grad anything...">
 
-                <button><i class="fas fa-paper-plane"></i></button>
+                            <button><i class="fas fa-paper-plane"></i></button>
 
-            </div>
+                        </div>
 
         </div>
 
